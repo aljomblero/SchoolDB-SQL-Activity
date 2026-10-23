@@ -1,0 +1,121 @@
+SchoolDB.sql.
+
+
+
+
+
+CREATE DATABASE SchoolDB;
+USE SchoolDB;
+
+CREATE TABLE Students (
+    student_id INT PRIMARY KEY,
+    student_name VARCHAR(100),
+    course VARCHAR(50),
+    year_level INT
+);
+
+CREATE TABLE Subjects (
+    subject_id INT PRIMARY KEY,
+    subject_name VARCHAR(100),
+    instructor VARCHAR(100)
+);
+
+CREATE TABLE Enrollments (
+    enrollment_id INT PRIMARY KEY,
+    student_id INT,
+    subject_id INT,
+    semester VARCHAR(20),
+    grade DECIMAL(5,2),
+    FOREIGN KEY (student_id) REFERENCES Students(student_id),
+    FOREIGN KEY (subject_id) REFERENCES Subjects(subject_id)
+);
+
+INSERT INTO Students VALUES
+(101,'Anna Cruz','BSIT',2),
+(102,'Ben Ramos','BSIT',3),
+(103,'Carla Diaz','BSCS',2),
+(104,'David Lee','BSIT',1),
+(105,'Ella Santos','BSCS',3);
+
+INSERT INTO Subjects VALUES
+(1,'Database Systems','Mr. Garcia'),
+(2,'Web Development','Ms. Lopez'),
+(3,'Business Analytics','Mr. Cruz');
+
+INSERT INTO Enrollments VALUES
+(1,101,1,'1st',91),
+(2,101,2,'1st',88),
+(3,102,3,'1st',95),
+(4,103,1,'1st',85),
+(5,104,2,'1st',90),
+(6,105,3,'1st',87);
+
+-- 1. Display all students
+SELECT * FROM Students;
+
+-- 2. Display BSIT students
+SELECT student_name, course
+FROM Students
+WHERE course = 'BSIT';
+
+-- 3. Display grades of 90 and above
+SELECT student_id, grade
+FROM Enrollments
+WHERE grade >= 90;
+
+-- 4. Join Students and Enrollments
+SELECT Students.student_name, Enrollments.grade
+FROM Students
+JOIN Enrollments
+ON Students.student_id = Enrollments.student_id;
+
+-- 5. Join three tables with grade filter
+SELECT Students.student_name,
+       Subjects.subject_name,
+       Enrollments.grade
+FROM Enrollments
+JOIN Students
+ON Enrollments.student_id = Students.student_id
+JOIN Subjects
+ON Enrollments.subject_id = Subjects.subject_id
+WHERE Enrollments.grade >= 90;
+
+-- Student Practice 1
+SELECT *
+FROM Students
+WHERE course = 'BSCS';
+
+-- Student Practice 2
+SELECT Students.student_name, Subjects.subject_name
+FROM Enrollments
+JOIN Students
+ON Enrollments.student_id = Students.student_id
+JOIN Subjects
+ON Enrollments.subject_id = Subjects.subject_id
+WHERE Subjects.subject_name = 'Web Development';
+
+-- Student Practice 3
+SELECT Students.student_name, Subjects.instructor
+FROM Enrollments
+JOIN Students
+ON Enrollments.student_id = Students.student_id
+JOIN Subjects
+ON Enrollments.subject_id = Subjects.subject_id;
+
+-- Student Practice 4
+SELECT student_id, grade
+FROM Enrollments
+WHERE grade BETWEEN 85 AND 90;
+
+-- Student Practice 5
+SELECT Students.student_name,
+       Students.course,
+       Subjects.subject_name,
+       Enrollments.grade
+FROM Enrollments
+JOIN Students
+ON Enrollments.student_id = Students.student_id
+JOIN Subjects
+ON Enrollments.subject_id = Subjects.subject_id
+WHERE Students.course = 'BSIT'
+AND Enrollments.grade >= 90;
